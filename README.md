@@ -3,6 +3,8 @@
 [![ROS2 Humble](https://img.shields.io/badge/ROS2-Humble-blue)](https://docs.ros.org/en/humble/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+基于 ROS2 Humble 的仓储 AMR（自主移动机器人）完整软件栈，涵盖 URDF/Xacro 建模、SLAM Toolbox 离线建图、AMCL 定位、Navigation2 DWB 局部规划、ros2_control 运动控制及任务调度状态机全链路。已在 Jetson Orin NX 上部署验证，导航频率 20 Hz，定位精度 < 3 cm，单次任务完成率 96%，支持 1000 m² 仓库全覆盖调度。
+
 A complete **ROS2 autonomous mobile robot (AMR)** system for warehouse logistics — from URDF modeling and SLAM-based mapping to full autonomy with Navigation2, ros2_control, and task scheduling.
 
 Tested on **Jetson Orin NX** with 20 Hz navigation loop, <3 cm localization accuracy, and 96% single-task completion rate across 1000 m² facilities.
