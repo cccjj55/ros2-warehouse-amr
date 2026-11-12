@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# binary / generated assets
+*.pgm binary
+*.png binary
+*.gif binary
+*.jpg binary
+
+# ROS / python
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.launch.py text eol=lf
+*.xacro text eol=lf
+*.world text eol=lf
+Makefile text eol=lf
