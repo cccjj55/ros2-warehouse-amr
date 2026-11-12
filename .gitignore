@@ -1,0 +1,22 @@
+# colcon / ROS 2
+build/
+install/
+log/
+*.egg-info/
+__pycache__/
+*.pyc
+
+# benchmark artifacts (keep the rendered table, drop raw dumps)
+docs/benchmarks/*.jsonl
+docs/benchmarks/*.csv
+!docs/benchmarks/latest.json
+
+# media staging
+docs/media/*.mp4
+docs/media/*.webm
+
+# editors / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

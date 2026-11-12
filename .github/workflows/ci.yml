@@ -1,0 +1,88 @@
+name: ci
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  ROS_DISTRO: humble
+
+jobs:
+  unit-tests:
+    name: FSM + metrics (pure python, no ROS)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install test deps
+        run: python -m pip install --upgrade pip pytest pyyaml
+      - name: Run unit tests
+        run: python -m pytest warehouse_amr_mission/test -q --maxfail=1
+
+  build:
+    name: colcon build + launch smoke test (ROS 2 Humble)
+    runs-on: ubuntu-22.04
+    container: ros:humble
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            ros-humble-navigation2 \
+            ros-humble-nav2-bringup \
+            ros-humble-slam-toolbox \
+            ros-humble-twist-mux \
+            ros-humble-ros2-control \
+            ros-humble-ros2-controllers \
+            ros-humble-xacro
+
+      - name: colcon build
+        shell: bash
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          colcon build --symlink-install --event-handlers console_cohesion+
+
+      - name: Package + parameter sanity
+        shell: bash
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          source install/setup.bash
+          set -x
+          ros2 pkg executables warehouse_amr_mission
+          ros2 pkg prefix warehouse_amr_description
+          xacro warehouse_amr_description/description/robot.urdf.xacro sim_mode:=true > /tmp/robot.urdf
+          grep -c "<link" /tmp/robot.urdf
+          python3 -c "
+          import yaml, glob, sys
+          for f in glob.glob('warehouse_amr_description/config/*.yaml') + glob.glob('warehouse_amr_mission/config/*.yaml'):
+              yaml.safe_load(open(f))
+              print('ok', f)
+          "
+
+      - name: Launch files parse with the real launch system
+        shell: bash
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          source install/setup.bash
+          set -x
+          ros2 launch warehouse_amr_description bringup_sim.launch.py --show-args
+          ros2 launch warehouse_amr_mission mission.launch.py --show-args
+
+      - name: World + map artifacts are loadable
+        shell: bash
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          source install/setup.bash
+          python3 -c "
+          import xml.etree.ElementTree as ET
+          ET.parse('warehouse_amr_description/worlds/warehouse.world')
+          print('world ok')
+          "
+          head -1 warehouse_amr_description/maps/warehouse.pgm

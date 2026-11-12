@@ -1,0 +1,15 @@
+# Demo mission set. Poses are (x, y, yaw) in the map frame and are chosen to be
+# collision free against warehouse_amr_description/maps/warehouse.yaml:
+#   free aisles: y in (0.10, 1.30), (1.90, 2.70), (3.30, 5.90)
+#   shelves:     x in [1.60, 4.60] and [5.20, 8.20] on the two shelf rows
+#   charging dock occupies x in [0.35, 1.15], y in [4.45, 5.05]
+missions:
+  - id: demo_01
+    pick: [3.10, 0.90, 0.0]
+    drop: [6.70, 3.90, 3.14]
+  - id: demo_02
+    pick: [6.70, 1.00, 0.0]
+    drop: [1.60, 4.60, 1.57]
+  - id: demo_03
+    pick: [2.20, 4.60, -1.57]
+    drop: [8.60, 4.80, 0.0]

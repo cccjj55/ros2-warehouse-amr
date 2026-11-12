@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<!--
+  Warehouse world for Gazebo Classic.
+
+  Coordinates intentionally match warehouse_amr_description/maps/warehouse.yaml
+  (10 m x 6 m, origin bottom-left, 0.05 m/cell) so that AMCL can be seeded at a
+  known pose in simulation. Geometry is defined inline: no `model://` downloads,
+  so the world loads offline and in CI.
+
+  Layout
+    * 10 x 6 m floor, perimeter walls
+    * two shelf rows (y = 1.60 and y = 3.00), 3 m units, 0.6 m deep, 1.8 m tall
+    * aisle widths: 2.0 m between rows, 1.5 m to the south wall
+    * charging dock footprint near (0.75, 4.75)
+-->
+<sdf version="1.7">
+  <world name="warehouse">
+
+    <physics name="default_physics" default="0" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <light name="sun" type="directional">
+      <cast_shadows>1</cast_shadows>
+      <pose>5 3 12 0 0 0</pose>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.4 0.2 -0.9</direction>
+    </light>
+
+    <model name="floor">
+      <static>true</static>
+      <pose>5 3 -0.01 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>10.0 6.0 0.02</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>10.0 6.0 0.02</size></box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.55 0.57 1</ambient>
+            <diffuse>0.55 0.55 0.57 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Perimeter walls: 0.1 m thick, 2 m tall. -->
+    <model name="wall_south">
+      <static>true</static>
+      <pose>5.0 0.05 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>10.0 0.1 2.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>10.0 0.1 2.0</size></box></geometry>
+          <material><ambient>0.25 0.27 0.3 1</ambient><diffuse>0.25 0.27 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_north">
+      <static>true</static>
+      <pose>5.0 5.95 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>10.0 0.1 2.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>10.0 0.1 2.0</size></box></geometry>
+          <material><ambient>0.25 0.27 0.3 1</ambient><diffuse>0.25 0.27 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_west">
+      <static>true</static>
+      <pose>0.05 3.0 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.1 6.0 2.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.1 6.0 2.0</size></box></geometry>
+          <material><ambient>0.25 0.27 0.3 1</ambient><diffuse>0.25 0.27 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_east">
+      <static>true</static>
+      <pose>9.95 3.0 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.1 6.0 2.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.1 6.0 2.0</size></box></geometry>
+          <material><ambient>0.25 0.27 0.3 1</ambient><diffuse>0.25 0.27 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Shelf units. static=true keeps Gazebo fast and the geometry exactly
+         aligned with the occupancy grid used by Nav2. -->
+    <model name="shelf_a1">
+      <static>true</static>
+      <pose>3.1 1.60 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.6 1.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.6 1.8</size></box></geometry>
+          <material><ambient>0.35 0.45 0.6 1</ambient><diffuse>0.35 0.45 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="shelf_a2">
+      <static>true</static>
+      <pose>6.7 1.60 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.6 1.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.6 1.8</size></box></geometry>
+          <material><ambient>0.35 0.45 0.6 1</ambient><diffuse>0.35 0.45 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="shelf_b1">
+      <static>true</static>
+      <pose>3.1 3.00 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.6 1.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.6 1.8</size></box></geometry>
+          <material><ambient>0.35 0.45 0.6 1</ambient><diffuse>0.35 0.45 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="shelf_b2">
+      <static>true</static>
+      <pose>6.7 3.00 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.6 1.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.6 1.8</size></box></geometry>
+          <material><ambient>0.35 0.45 0.6 1</ambient><diffuse>0.35 0.45 0.6 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="charging_dock">
+      <static>true</static>
+      <pose>0.75 4.75 0.15 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.8 0.6 0.3</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.8 0.6 0.3</size></box></geometry>
+          <material><ambient>0.9 0.7 0.2 1</ambient><diffuse>0.9 0.7 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <gui>
+      <camera name="user_camera">
+        <pose>5.0 -6.0 9.0 0 0.9 1.57</pose>
+      </camera>
+    </gui>
+
+  </world>
+</sdf>

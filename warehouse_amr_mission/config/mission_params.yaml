@@ -1,0 +1,14 @@
+mission_server:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: map
+    # Absolute path to a mission list; the launch file rewrites this by default.
+    missions_file: ""
+    pick_duration_s: 2.0
+    mission_timeout_s: 120.0
+    max_nav_retries: 2
+    loop: false
+    autostart: true
+    # Empty disables recording. Point this at docs/benchmarks/... to keep runs.
+    metrics_path: ""
+    tick_period_s: 1.0
