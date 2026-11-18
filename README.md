@@ -19,6 +19,18 @@ ROS 2 Humble · Gazebo Classic · 差速底盘 · 一条命令起全栈。
 
 ---
 
+## 结果一览 / At a glance
+
+| 项 | 现在 |
+| --- | --- |
+| 定位-规划-控制 | Nav2 + AMCL + ros2_control + Gazebo Classic，`bringup_sim.launch.py` 一条命令起全栈 |
+| 任务层 | 与 ROS 解耦的状态机（每段航点重试上限 + 整单超时看门狗）；24 个 pytest，CI 里 0.2 s 跑完 |
+| 度量层 | 随机 25 个目标压测 → JSONL → 成功率 / P50 / P95 / 失败原因（超时·取消·被拒），脚本回写 README |
+| 修过的坑 | `spawner.py`→`spawner`、Foxy 时代导航节点列表、AMCL 初始位姿落在地图原点；`CHANGELOG.md` 逐条记根因 |
+| 边界 | 仿真链路已验证；实车需自备 `diffdrive_arduino` 硬件插件，仓库里没有 |
+
+---
+
 ## 这是什么
 
 大多数 ROS 2 导航仓库停在"能跟着教程跑起来"。这个仓库补的是后面那半段：**任务怎么被调度、
