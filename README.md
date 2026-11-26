@@ -3,7 +3,9 @@
 **仓储自主移动机器人（AMR）软件栈：Nav2 导航 + 任务状态机 + 可复现基准。**
 ROS 2 Humble · Gazebo Classic · 差速底盘 · 一条命令起全栈。
 
-[![ci](https://github.com/cccjj55/ros2-warehouse-amr/actions/workflows/ci.yml/badge.svg)](https://github.com/cccjj55/ros2-warehouse-amr/actions/workflows/ci.yml)
+[![ci](https://github.com/cccjj55/nav2-mission-fsm/actions/workflows/ci.yml/badge.svg)](https://github.com/cccjj55/nav2-mission-fsm/actions/workflows/ci.yml)
+
+> **Why keep the mission FSM free of ROS imports**: On real robotics integration days (learned the hard way on competition vehicles), retry budgets, goal cancellations, and watchdog timeouts are the first things that break under stress—and the slowest things to test if every branch needs Gazebo running. Putting pure-Python transitions in `mission_fsm.py` lets 24 state-machine tests finish in 0.2 s, while `mission_server.py` stays a thin async Nav2 adapter.
 [![ROS 2](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![tests](https://img.shields.io/badge/unit%20tests-24%20passing-brightgreen)](warehouse_amr_mission/test)
@@ -53,7 +55,7 @@ sudo apt install -y ros-humble-navigation2 ros-humble-nav2-bringup \
                     ros-humble-ros2-control ros-humble-ros2-controllers \
                     ros-humble-gazebo-ros-pkgs
 
-git clone https://github.com/cccjj55/ros2-warehouse-amr.git ~/ros2_ws/src/ros2-warehouse-amr
+git clone https://github.com/cccjj55/nav2-mission-fsm.git ~/ros2_ws/src/nav2-mission-fsm
 cd ~/ros2_ws && colcon build --symlink-install && source install/setup.bash
 
 ros2 launch warehouse_amr_description bringup_sim.launch.py     # Gazebo + AMCL + Nav2 + RViz
@@ -134,7 +136,7 @@ graph LR
 ## 仓库结构
 
 ```
-ros2-warehouse-amr/
+nav2-mission-fsm/
 ├── warehouse_amr_description/        # CMake 包：机器人描述 + 世界 + 地图 + Nav2 参数 + launch
 │   ├── description/                  #   URDF/Xacro（底盘、LiDAR、深度相机、ros2_control）
 │   ├── config/                       #   nav2_params.yaml（Humble 官方模板 + 本车 delta）、控制器、twist_mux、RViz
@@ -194,5 +196,11 @@ v0.5 自动充电对接 → v1.0 实车与策略接口（VLA 子目标接入点�
 
 ## 作者
 
-**陈泽一 (Chen Zeyi)** · 中南大学 → 浙江大学（机械工程，2026 级）
+**陈泽一 (Chen Zeyi)** · 浙江大学（机械工程，M.Sc.）  
 issues / PR 都看，复现不了的环境问题请附 `ros2 doctor --report`。
+
+## 相关
+
+- [servo-frame-probe](https://github.com/cccjj55/servo-frame-probe) — 下位机二进制帧协议（CRC-16/CCITT-FALSE）与串口 jitter 剖析工具
+- [lerobot-qc-pipeline](https://github.com/cccjj55/lerobot-qc-pipeline) — 示教轨迹重采样与 MAD 异常段清洗管线
+- [sim-claims-ledger](https://github.com/cccjj55/sim-claims-ledger) — 仿真/控制性能声明核验账本
